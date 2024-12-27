@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body>
+<h2 hx-get="{%  url 'layout-home' %}" hx-trigger="click" hx-target="#main-container">TopBar</h2>
+<div id="main-container">
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>
