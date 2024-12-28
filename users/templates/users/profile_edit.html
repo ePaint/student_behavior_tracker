@@ -1,0 +1,16 @@
+{% extends request.base_template %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div class="row"><h2 class="text-center">User Profile</h2></div>
+    <form method="post" class="row my-2" hx-post="{% url 'users-profile-edit' %}" hx-trigger="submit">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'users-profile' %}" class="btn btn-outline-secondary me-2" hx-get="{% url 'users-profile' %}">Cancel</a>
+            <a href="{% url 'users-password-update' %}" class="btn btn-outline-danger me-2" hx-get="{% url 'users-password-update' %}">Change Password</a>
+            <button type="submit" class="btn btn-outline-primary">Save</button>
+        </div>
+    </form>
+{% endblock %}

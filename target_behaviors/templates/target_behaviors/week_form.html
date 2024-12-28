@@ -1,0 +1,182 @@
+{% extends request.base_template %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load dict_key %}
+
+{% block content %}
+    <div class="my-2">
+        <div class="row">
+            <a class="p-0" href="{% url 'target-behaviors-detail' week.target_behavior.uuid %}" hx-get="{% url 'target-behaviors-detail' week.target_behavior.uuid %}">
+                <i class="fa fa-arrow-left btn btn-outline-secondary" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row"><h2 class="text-center">Target: {{ week.target_behavior.name }}</h2></div>
+    </div>
+    <div class="my-2">
+        <div class="row"><h3 class="text-center text-secondary">Week {{ week.week_number }}</h3></div>
+    </div>
+    <div class="d-none d-xl-block">
+        <div class="my-2">
+            <div class="row border rounded-3 py-1">
+                <span class="col-md-4 text-secondary text-md-end text-start">Goal Points:</span>
+                <span class="col-md-8">{{ week.target_behavior.week_goal_percentage }}% ({{ week.target_behavior.week_goal_points }}/{{ week.target_behavior.max_points }})</span>
+            </div>
+        </div>
+        <div class="my-2">
+            <div class="row border rounded-3 py-1">
+                <span class="col-md-4 text-secondary text-md-end text-start">Actual Points:</span>
+                <span class="col-md-8">{{ week.current_percentage }}% ({{ week.current_points }}/{{ week.target_behavior.max_points }})</span>
+            </div>
+        </div>
+    </div>
+    <form class="my-4 d-none d-xl-block" method="post"
+            {% if week.pk %}
+          hx-post="{% url 'target-behaviors-week-edit' week.uuid %}"
+            {% else %}
+          hx-post="{% url 'target-behaviors-week-create' %}"
+            {% endif %}
+          hx-trigger="submit">
+        {% csrf_token %}
+        <div class="row">
+            <div class="d-flex justify-content-end p-0">
+                <button type="submit" class="btn btn-outline-primary m-0">Submit</button>
+            </div>
+        </div>
+        <input type="hidden" name="week_number" value="{{ week.week_number }}">
+        <input type="hidden" name="target_behavior_uuid" value="{{ week.target_behavior.uuid }}">
+        <div class="row mt-5 gap-1">
+            <div class="col-1"></div>
+            {% for period in week.target_behavior.periods.all %}
+                <div class="col p-2 d-flex justify-content-center align-items-center bg-primary-subtle rounded-2">
+                    <span class="text-secondary fw-bold">{{ period }}</span>
+                </div>
+            {% endfor %}
+        </div>
+        {% for day in week.target_behavior.days.all %}
+            <div class="row gap-1 pt-1">
+                <div class="col-1 p-2 d-flex justify-content-center align-items-center bg-success-subtle rounded-2">
+                    <span class="text-secondary fw-bold">{{ day }}</span>
+                </div>
+                {% for period in week.target_behavior.periods.all %}
+                    {% with record=records|dict_key:day|dict_key:period %}
+                        <div class="col border p-3 rounded-2">
+                            <label class="form-label text-secondary small" for="value_{{ record.pk }}">Result:</label>
+                            <select class="form-control" name="value_{{ record.pk }}" id="value_{{ record.pk }}">
+                                <option></option>
+                                {% for option in options %}
+                                    <option {% if record.value == option %} selected {% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="form-label text-secondary small" for="notes_{{ record.pk }}">Comments:</label>
+                            <textarea class="form-control" rows="3" name="notes_{{ record.pk }}" id="notes_{{ record.pk }}">{{ record.notes|default_if_none:'' }}</textarea>
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </form>
+    <div class="d-xl-none container">
+        <div class="my-2">
+            <div class="row border rounded-3 py-1">
+                <span class="col-md-4 text-secondary text-md-end text-start">Goal Points:</span>
+                <span class="col-md-8">{{ week.target_behavior.week_goal_percentage }}% ({{ week.target_behavior.week_goal_points }}/{{ week.target_behavior.max_points }})</span>
+            </div>
+        </div>
+        <div class="my-2">
+            <div class="row border rounded-3 py-1">
+                <span class="col-md-4 text-secondary text-md-end text-start">Actual Points:</span>
+                <span class="col-md-8">{{ week.current_percentage }}% ({{ week.current_points }}/{{ week.target_behavior.max_points }})</span>
+            </div>
+        </div>
+    </div>
+    <form class="my-4 d-xl-none" method="post"
+            {% if week.pk %}
+          hx-post="{% url 'target-behaviors-week-edit' week.uuid %}"
+            {% else %}
+          hx-post="{% url 'target-behaviors-week-create' %}"
+            {% endif %}
+          hx-trigger="submit">
+        {% csrf_token %}
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-outline-primary">Submit</button>
+        </div>
+        <input type="hidden" name="week_number" value="{{ week.week_number }}">
+        <input type="hidden" name="target_behavior_uuid" value="{{ week.target_behavior.uuid }}">
+        {% for day in records %}
+            {% if not forloop.first %}
+                <hr class="hr my-5"/>
+            {% endif %}
+            <div class="row">
+                <h4 class="text-center text-secondary">{{ day }}</h4>
+            </div>
+            {% for period in records|dict_key:day %}
+                {% with day_records=records|dict_key:day %}
+                    {% with record=day_records|dict_key:period %}
+                        <div class="container my-2 border rounded-3">
+                            <div class="row p-2 d-flex gap-1 flex-row">
+                                <span class="badge text-bg-secondary">{{ day }}</span>
+                                <span class="badge text-bg-secondary">{{ period }}</span>
+                            </div>
+                            <div class="row p-2">
+                                <label class="form-label text-secondary small" for="value_{{ record.pk }}">Result:</label>
+                                <select class="form-control" name="value_{{ record.pk }}" id="value_{{ record.pk }}">
+                                    <option></option>
+                                    {% for option in options %}
+                                        <option {% if record.value == option %} selected {% endif %}>{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="row p-2">
+                                <label class="form-label text-secondary small" for="notes_{{ record.pk }}">Comments:</label>
+                                <textarea class="form-control" rows="3" name="notes_{{ record.pk }}" id="notes_{{ record.pk }}">{{ record.notes|default_if_none:'' }}</textarea>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% endwith %}
+            {% endfor %}
+        {% endfor %}
+    </form>
+    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+    <style>
+        #btn-back-to-top {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: none;
+        }
+    </style>
+    <script>
+        //Get the button
+        var scroll_to_top_button = document.getElementById("btn-back-to-top");
+
+        // When the user scrolls down 200px from the top of the document, show the button
+        window.onscroll = function () {
+            scrollFunction();
+        };
+
+        scrollFunction();
+
+        function scrollFunction() {
+            if (
+                document.body.scrollTop > 200 ||
+                document.documentElement.scrollTop > 200
+            ) {
+                scroll_to_top_button.style.display = "block";
+            } else {
+                scroll_to_top_button.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        scroll_to_top_button.addEventListener("click", backToTop);
+
+        function backToTop() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+    </script>
+{% endblock %}

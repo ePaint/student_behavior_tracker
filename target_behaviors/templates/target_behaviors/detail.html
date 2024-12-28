@@ -1,0 +1,150 @@
+{% extends request.base_template %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="my-2">
+        <div class="row">
+            <a class="p-0" href="{% url 'users-profile' %}" hx-get="{% url 'users-profile' %}">
+                <i class="fa fa-arrow-left btn btn-outline-secondary" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row"><h2 class="text-center">Target: {{ target_behavior.name }}</h2></div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Description:</span>
+            <span class="col-md-8">{{ target_behavior.description }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Date Created:</span>
+            <span class="col-md-8">{{ target_behavior.date_created }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Goal Points:</span>
+            <span class="col-md-8">{{ target_behavior.week_goal_percentage }}% ({{ target_behavior.week_goal_points }}/{{ target_behavior.max_points }})</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Actual Points:</span>
+            <span class="col-md-8">{{ current_percentage }}% ({{ current_points }}/{{ target_behavior.max_points }})</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Days:</span>
+            <span class="col-md-8 d-flex flex-wrap justify-content-start align-items-center gap-1">
+                {% for day in target_behavior.days.all %}
+                    <span class="badge bg-success-subtle text-secondary">{{ day }}</span>
+                {% endfor %}
+            </span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Periods:</span>
+            <span class="col-md-8 d-flex flex-wrap justify-content-start align-items-center gap-1">
+                {% for period in target_behavior.periods.all %}
+                    <span class="badge bg-primary-subtle text-secondary">{{ period }}</span>
+                {% endfor %}
+            </span>
+        </div>
+    </div>
+    <div class="my-5">
+        <div class="row border rounded-3 overflow-hidden">
+            <canvas id="chart" width="200" height="100"></canvas>
+        </div>
+    </div>
+    <div class="mt-5 mb-2">
+        <div class="row">
+            <h2 class="text-center">Weeks</h2>
+        </div>
+        {% for week in weeks %}
+            <div class="row py-1">
+                <button hx-get="{% url 'target-behaviors-week-edit' week.pk %}"
+                        class="fs-5 btn btn-outline-secondary">Week {{ week.week_number }} - {{ week.current_points }}/{{ week.target_behavior.max_points }} - {{ week.current_percentage }}%
+                </button>
+            </div>
+        {% endfor %}
+        <div class="row py-1">
+            <button hx-get="{% url 'target-behaviors-week-create' %}?target_behavior_uuid={{ target_behavior.pk }}"
+                    class="fs-3 btn btn-outline-primary w-100">Register New Week
+            </button>
+        </div>
+    </div>
+    <script>
+        var ctx = document.getElementById("chart").getContext("2d");
+        var animation_duration = 1000;
+
+        function generateChart() {
+            console.log('Generating chart');
+            try {
+                Chart.getChart("chart").destroy();
+                animation_duration = 0;
+            } catch (e) {
+                console.log('No chart to destroy');
+            }
+
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ chart_labels|safe }},
+                    datasets: [{
+                        label: 'Weekly Goal Progress',
+                        data: {{ chart_points|safe }},
+                        backgroundColor: '#0d6efd',
+                        borderColor: '#0d6efd',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true, // Enable the title
+                            text: 'Weekly Goal Progress', // Set the title text
+                            font: {
+                                size: 18, // Font size
+                                weight: 'bold' // Font weight
+                            },
+                            color: '#737373', // Text color
+                            position: 'top', // Position: 'top', 'bottom'
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: animation_duration
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '%'; // Convert decimal to percentage
+                                }
+                            },
+                            beginAtZero: true // Optional: Ensures the scale starts at 0
+                        }
+                    }
+                }
+            });
+        }
+
+        window.onresize = generateChart;
+        generateChart();
+    </script>
+{% endblock %}

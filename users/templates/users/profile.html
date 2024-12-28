@@ -1,0 +1,68 @@
+{% extends request.base_template %}
+
+{% block content %}
+    <div class="my-2"><div class="row"><h2 class="text-center">User Profile</h2></div></div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Email:</span>
+            <span class="col-md-8">{{ user.email }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">First Name:</span>
+            <span class="col-md-8">{{ user.first_name }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Last Name:</span>
+            <span class="col-md-8">{{ user.last_name }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Level of access wanted:</span>
+            <span class="col-md-8">{{ user.level_of_access_wanted }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Level of access granted:</span>
+            <span class="col-md-8">{{ user.level_of_access_granted }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Date joined:</span>
+            <span class="col-md-8">{{ user.date_joined }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row">
+            <div class="d-flex justify-content-end p-0">
+                <form method="post" hx-post="{% url 'users-signout' %}" hx-trigger="submit">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-secondary">Sign Out</button>
+                </form>
+                <a href="{% url 'users-profile-edit' %}" class="btn btn-outline-primary ms-auto" hx-get="{% url 'users-profile-edit' %}">Edit</a>
+            </div>
+        </div>
+    </div>
+    {% if user.level_of_access_wanted == 'Student' %}
+        <div class="mt-5">
+            <div class="row"><h2 class="text-center">Registered Target Behaviors</h2></div>
+            {% for target_behavior in user.target_behaviors.all %}
+                <div class="row my-3 border rounded-3">
+                    <a href="{% url 'target-behaviors-detail' target_behavior.pk %}"
+                       hx-get="{% url 'target-behaviors-detail' target_behavior.pk %}"
+                       class="fs-1 py-3 btn btn-outline-primary w-100 h-100">{{ target_behavior }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% elif user.level_of_access_wanted == 'Teacher' %}
+        Teacher!
+    {% else %}
+        Admin!
+    {% endif %}
+{% endblock %}

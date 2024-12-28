@@ -1,0 +1,15 @@
+{% extends request.base_template %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="row"><h2 class="text-center">Sign In Form</h2></div>
+    <form class="row" method="post" id="signin-form" hx-post="{% url 'users-signin' %}" hx-trigger="submit">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'users-signup' %}" class="btn btn-outline-secondary">Sign Up</a>
+            <button type="submit" class="btn btn-outline-primary">Sign In</button>
+        </div>
+    </form>
+{% endblock %}
