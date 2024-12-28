@@ -6,7 +6,7 @@
 {% block content %}
     <div class="my-2">
         <div class="row">
-            <a class="p-0" href="{% url 'target-behaviors-detail' week.target_behavior.uuid %}" hx-get="{% url 'target-behaviors-detail' week.target_behavior.uuid %}">
+            <a class="p-0" href="{% url 'target-behaviors-detail' week.target_behavior.uuid week.user.uuid %}" hx-get="{% url 'target-behaviors-detail' week.target_behavior.uuid week.user.uuid %}">
                 <i class="fa fa-arrow-left btn btn-outline-secondary" aria-hidden="true"></i>
             </a>
         </div>
@@ -46,6 +46,7 @@
         </div>
         <input type="hidden" name="week_number" value="{{ week.week_number }}">
         <input type="hidden" name="target_behavior_uuid" value="{{ week.target_behavior.uuid }}">
+        <input type="hidden" name="user_uuid" value="{{ week.user.uuid }}">
         <div class="row mt-5 gap-1">
             <div class="col-1"></div>
             {% for period in week.target_behavior.periods.all %}
@@ -104,6 +105,7 @@
         </div>
         <input type="hidden" name="week_number" value="{{ week.week_number }}">
         <input type="hidden" name="target_behavior_uuid" value="{{ week.target_behavior.uuid }}">
+        <input type="hidden" name="user_uuid" value="{{ week.user.uuid }}">
         {% for day in records %}
             {% if not forloop.first %}
                 <hr class="hr my-5"/>

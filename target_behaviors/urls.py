@@ -6,7 +6,7 @@ from target_behaviors.views import (
 )
 
 urlpatterns = [
-    path("detail/<uuid:slug>/", Detail.as_view(), name=Detail.url_name),
+    path("detail/<uuid:slug>/<uuid:user_uuid>/", Detail.as_view(), name=Detail.url_name),
     path(
         "week/new/",
         create_target_behavior_week,

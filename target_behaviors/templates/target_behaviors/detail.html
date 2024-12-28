@@ -74,7 +74,7 @@
             </div>
         {% endfor %}
         <div class="row py-1">
-            <button hx-get="{% url 'target-behaviors-week-create' %}?target_behavior_uuid={{ target_behavior.pk }}"
+            <button hx-get="{% url 'target-behaviors-week-create' %}?target_behavior_uuid={{ target_behavior.uuid }}&user_uuid={{ user.uuid }}"
                     class="fs-3 btn btn-outline-primary w-100">Register New Week
             </button>
         </div>

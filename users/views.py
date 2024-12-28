@@ -2,6 +2,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView
 from users.forms import SignUpForm, ProfileEditForm
+from users.models import CustomUser
 
 
 class SignIn(LoginView):
@@ -22,6 +23,17 @@ class SignOut(LogoutView):
     success_url = reverse_lazy('users-signin')
 
 
+class ProfileOther(DetailView):
+    template_name = 'users/profile.html'
+    url_name = 'users-profile-other'
+    model = 'users.CustomUser'
+    context_object_name = 'user'
+    slug_field = "uuid"
+
+    def get_object(self, queryset=None):
+        return CustomUser.objects.get(uuid=self.kwargs.get('slug'))
+
+
 class Profile(DetailView):
     template_name = 'users/profile.html'
     url_name = 'users-profile'
@@ -30,6 +42,13 @@ class Profile(DetailView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['students'] = []
+        if getattr(self.request.user, 'level_of_access_granted') == 'Teacher':
+            context['students'] = CustomUser.objects.filter(level_of_access_granted='Student')
+        return context
 
 
 class ProfileEdit(UpdateView):

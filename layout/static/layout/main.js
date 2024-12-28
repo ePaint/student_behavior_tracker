@@ -1,6 +1,4 @@
-window.top.addEventListener('htmx:afterRequest', function (event) {
-    console.log('HTMX request completed!', event.detail);
-    // Scroll to top instantly after each HTMX request
+window.top.addEventListener('htmx:afterSwap', function (event) {
     window.scrollTo({
         top: 0,
         left: 0,

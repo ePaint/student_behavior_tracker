@@ -7,6 +7,7 @@ from target_behaviors.models import (
     TargetBehaviorWeek,
     TargetBehaviorRecord,
 )
+from users.models import CustomUser
 
 
 class Detail(DetailView):
@@ -18,8 +19,9 @@ class Detail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["user"] = CustomUser.objects.get(uuid=self.request.resolver_match.kwargs.get("user_uuid"))
         context["weeks"] = TargetBehaviorWeek.objects.filter(
-            user=self.request.user, target_behavior=self.object
+            user=context["user"], target_behavior=self.object
         )
         context["current_points"] = sum(
             [week.current_points for week in context["weeks"]]
@@ -32,14 +34,14 @@ class Detail(DetailView):
         return context
 
 
-def _get_week_records(request, target_behavior, week):
+def _get_week_records(week):
     records = {}
-    for day in target_behavior.days.all():
+    for day in week.target_behavior.days.all():
         records[day] = {}
-        for period in target_behavior.periods.all():
+        for period in week.target_behavior.periods.all():
             records[day][period] = TargetBehaviorRecord.objects.get_or_create(
-                user=request.user,
-                target_behavior=target_behavior,
+                user=week.user,
+                target_behavior=week.target_behavior,
                 week=week,
                 day=day,
                 period=period,
@@ -53,7 +55,7 @@ def _handle_week_form(request):
     )
     week = TargetBehaviorWeek.objects.get_or_create(
         week_number=request.POST.get("week_number", 1),
-        user=request.user,
+        user=CustomUser.objects.get(uuid=request.POST.get("user_uuid")),
         target_behavior=target_behavior,
     )[0]
     for key, value in request.POST.items():
@@ -77,13 +79,18 @@ def create_target_behavior_week(request):
     target_behavior_uuid = request.GET.get("target_behavior_uuid")
     if not target_behavior_uuid:
         return HttpResponse("Target Behavior ID is required", status=400)
+    user_uuid = request.GET.get("user_uuid")
+    if not user_uuid:
+        return HttpResponse("User ID is required", status=400)
     target_behavior = TargetBehavior.objects.get(uuid=target_behavior_uuid)
+    user = CustomUser.objects.get(uuid=user_uuid)
+    print(user.email)
     week_count = TargetBehaviorWeek.objects.filter(
-        user=request.user, target_behavior=target_behavior
+        user=user, target_behavior=target_behavior
     ).count()
     week = TargetBehaviorWeek.objects.get_or_create(
         week_number=week_count + 1,
-        user=request.user,
+        user=user,
         target_behavior=target_behavior,
     )[0]
 
@@ -92,7 +99,7 @@ def create_target_behavior_week(request):
         "target_behaviors/week_form.html",
         {
             "week": week,
-            "records": _get_week_records(request, target_behavior, week),
+            "records": _get_week_records(week),
             "options": [option[0] for option in TargetBehaviorRecord.VALUE_CHOICES],
         },
     )
@@ -102,6 +109,7 @@ def create_target_behavior_week(request):
 def edit_target_behavior_week(request, slug):
     if request.method == "POST":
         week = _handle_week_form(request)
+        print(week.user.uuid)
         return redirect("target-behaviors-week-edit", slug=week.uuid)
 
     # GET request
@@ -111,7 +119,7 @@ def edit_target_behavior_week(request, slug):
         "target_behaviors/week_form.html",
         {
             "week": week,
-            "records": _get_week_records(request, week.target_behavior, week),
+            "records": _get_week_records(week),
             "options": [option[0] for option in TargetBehaviorRecord.VALUE_CHOICES],
         },
     )
