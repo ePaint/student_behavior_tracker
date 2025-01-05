@@ -2,6 +2,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils import Choices
 from model_utils.fields import UUIDField, MonitorField
+from django.utils.translation import gettext_lazy as _
 
 
 class Day(models.Model):
@@ -30,6 +31,10 @@ class TargetBehavior(models.Model):
         default=75, validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
     deleted = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _('goal')
+        verbose_name_plural = _('goals')
 
     def __str__(self):
         return self.name
