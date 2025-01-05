@@ -87,7 +87,7 @@
     {% endif %}
     {% if user.level_of_access_granted == 'Student' %}
         <div class="mt-5">
-            <div class="row"><h2 class="text-center">Registered Target Behaviors</h2></div>
+            <div class="row"><h2 class="text-center">Registered SMART Goals</h2></div>
             {% for target_behavior in user.target_behaviors.all %}
                 {% if not target_behavior.deleted %}
                     <div class="row my-3 border rounded-3">
@@ -100,7 +100,7 @@
             <div class="row my-3 border rounded-3">
                 <a href="{% url 'target-behaviors-create' user.uuid %}"
                    hx-get="{% url 'target-behaviors-create' user.uuid %}"
-                   class="fs-3 btn btn-outline-primary w-100 h-100">Register New Target Behavior</a>
+                   class="fs-3 btn btn-outline-primary w-100 h-100">Register New Goal</a>
             </div>
         </div>
     {% elif user.level_of_access_granted == 'Teacher' %}

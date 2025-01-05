@@ -3,7 +3,7 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-    <div class="row"><h2 class="text-center">Target Behavior</h2></div>
+    <div class="row"><h2 class="text-center">Goal</h2></div>
     <form method="post" class="row my-2" hx-post="{% url 'target-behaviors-create' user.uuid %}" hx-trigger="submit">
         {% csrf_token %}
         {{ form|crispy }}
