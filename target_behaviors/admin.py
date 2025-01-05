@@ -4,6 +4,6 @@ from target_behaviors.models import Day, Period, TargetBehavior, TargetBehaviorW
 admin.site.register(Day)
 admin.site.register(Period)
 admin.site.register(TargetBehavior)
-admin.site.register(TargetBehaviorWeek)
-admin.site.register(TargetBehaviorRecord)
+# admin.site.register(TargetBehaviorWeek)
+# admin.site.register(TargetBehaviorRecord)
 

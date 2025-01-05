@@ -1,0 +1,15 @@
+{% extends request.base_template %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div class="row"><h2 class="text-center">Target Behavior</h2></div>
+    <form method="post" class="row my-2" hx-post="{% url 'target-behaviors-edit' target_behavior.uuid user.uuid %}" hx-trigger="submit">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}" class="btn btn-outline-secondary me-2" hx-get="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}">Cancel</a>
+            <button type="submit" class="btn btn-outline-primary">Save</button>
+        </div>
+    </form>
+{% endblock %}

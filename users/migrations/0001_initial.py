@@ -66,6 +66,7 @@ class Migration(migrations.Migration):
                         max_length=10,
                     ),
                 ),
+                ("teacher", models.ForeignKey(blank=True, null=True, on_delete=models.CASCADE, related_name="students", to="users.customuser")),
                 ("date_joined", models.DateTimeField(auto_now_add=True)),
                 ("is_active", models.BooleanField(default=True)),
                 ("is_staff", models.BooleanField(default=False)),
@@ -84,7 +85,7 @@ class Migration(migrations.Migration):
                 (
                     "target_behaviors",
                     models.ManyToManyField(
-                        related_name="users", to="target_behaviors.targetbehavior"
+                        related_name="users", to="target_behaviors.targetbehavior", blank=True
                     ),
                 ),
                 (

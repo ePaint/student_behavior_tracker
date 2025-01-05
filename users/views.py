@@ -43,13 +43,6 @@ class Profile(DetailView):
     def get_object(self, queryset=None):
         return self.request.user
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['students'] = []
-        if getattr(self.request.user, 'level_of_access_granted') == 'Teacher':
-            context['students'] = CustomUser.objects.filter(level_of_access_granted='Student')
-        return context
-
 
 class ProfileEdit(UpdateView):
     template_name = 'users/profile_edit.html'

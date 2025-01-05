@@ -5,13 +5,33 @@
 {% block content %}
     <div class="my-2">
         <div class="row">
-            <a class="p-0" href="{% url 'users-profile' %}" hx-get="{% url 'users-profile' %}">
-                <i class="fa fa-arrow-left btn btn-outline-secondary" aria-hidden="true"></i>
-            </a>
+            <div class="d-flex justify-content-between p-0">
+                <a class="p-0" href="{% url 'users-profile' %}" hx-get="{% url 'users-profile' %}">
+                    <i class="fa fa-arrow-left btn btn-outline-secondary" aria-hidden="true"></i>
+                </a>
+                <div class="d-flex gap-3">
+                    <a class="btn btn-outline-secondary" href="{% url 'target-behaviors-edit' target_behavior.uuid user.uuid %}" hx-get="{% url 'target-behaviors-edit' target_behavior.uuid user.uuid %}">
+                        Edit
+                    </a>
+                    <button class="btn btn-outline-danger" hx-get="{% url 'target-behaviors-delete' target_behavior.uuid user.uuid %}" hx-trigger="confirm-delete" onclick="askDelete(this)">Delete</button>
+                </div>
+            </div>
         </div>
     </div>
     <div class="my-2">
         <div class="row"><h2 class="text-center">Target: {{ target_behavior.name }}</h2></div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Student:</span>
+            <span class="col-md-8">{{ user }}</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Teacher:</span>
+            <span class="col-md-8">{{ user.teacher }}</span>
+        </div>
     </div>
     <div class="my-2">
         <div class="row border rounded-3 py-1">
@@ -27,14 +47,20 @@
     </div>
     <div class="my-2">
         <div class="row border rounded-3 py-1">
-            <span class="col-md-4 text-secondary text-md-end text-start">Goal Points:</span>
+            <span class="col-md-4 text-secondary text-md-end text-start">Weekly Goal Points:</span>
             <span class="col-md-8">{{ target_behavior.week_goal_percentage }}% ({{ target_behavior.week_goal_points }}/{{ target_behavior.max_points }})</span>
         </div>
     </div>
     <div class="my-2">
         <div class="row border rounded-3 py-1">
+            <span class="col-md-4 text-secondary text-md-end text-start">Total Goal Points:</span>
+            <span class="col-md-8">{{ target_behavior.week_goal_percentage }}% ({{ goal_points }}/{{ goal_max_points }})</span>
+        </div>
+    </div>
+    <div class="my-2">
+        <div class="row border rounded-3 py-1">
             <span class="col-md-4 text-secondary text-md-end text-start">Actual Points:</span>
-            <span class="col-md-8">{{ current_percentage }}% ({{ current_points }}/{{ target_behavior.max_points }})</span>
+            <span class="col-md-8">{{ current_percentage }}% ({{ current_points }}/{{ current_max_points }})</span>
         </div>
     </div>
     <div class="my-2">
@@ -146,5 +172,51 @@
 
         window.onresize = generateChart;
         generateChart();
+    </script>
+
+    <script>
+        function askDelete(element) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-danger mx-1",
+                    cancelButton: "btn btn-outline-secondary mx-1"
+                },
+                buttonsStyling: false
+            });
+            swalWithBootstrapButtons.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirm Delete",
+                cancelButtonText: "Cancel",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    htmx.trigger(element, 'confirm-delete');
+
+                    swalWithBootstrapButtons.fire({
+                        title: "Deleted!",
+                        text: "Your target behavior has been deleted.",
+                        icon: "success",
+                        customClass: {
+                            confirmButton: "btn btn-outline-secondary"
+                        }
+                    });
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelled",
+                        text: "Your target behavior is safe :)",
+                        icon: "error",
+                        customClass: {
+                            confirmButton: "btn btn-outline-success"
+                        }
+                    });
+                }
+            });
+        }
     </script>
 {% endblock %}

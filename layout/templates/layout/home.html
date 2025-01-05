@@ -15,7 +15,11 @@
                     {% csrf_token %}
                     <button type="submit" class="btn btn-outline-secondary">Sign Out</button>
                 </form>
-                <a href="{% url 'users-profile' %}" class="btn btn-outline-primary" hx-get="{% url 'users-profile' %}">Profile</a>
+                {% if request.user.is_superuser %}
+                    <a href="/admin" class="btn btn-outline-danger">Admin</a>
+                {% else %}
+                    <a href="{% url 'users-profile' %}" class="btn btn-outline-primary" hx-get="{% url 'users-profile' %}">Profile</a>
+                {% endif %}
             </div>
         {% endif %}
     </div>

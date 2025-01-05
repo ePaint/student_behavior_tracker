@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic import DetailView
+from django.urls import reverse
+from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from target_behaviors.models import (
     TargetBehavior,
     TargetBehaviorWeek,
@@ -19,19 +20,90 @@ class Detail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user"] = CustomUser.objects.get(uuid=self.request.resolver_match.kwargs.get("user_uuid"))
+        context["user"] = CustomUser.objects.get(
+            uuid=self.request.resolver_match.kwargs.get("user_uuid")
+        )
         context["weeks"] = TargetBehaviorWeek.objects.filter(
             user=context["user"], target_behavior=self.object
         )
         context["current_points"] = sum(
             [week.current_points for week in context["weeks"]]
         )
+        context["current_max_points"] = self.object.max_points * len(context["weeks"])
         context["current_percentage"] = int(
-            context["current_points"] / self.object.max_points * 100 + 0.5
+            context["current_points"] / max(1, context["current_max_points"]) * 100
+            + 0.5
         )
+        context["goal_points"] = self.object.week_goal_points * len(context["weeks"])
+        context["goal_max_points"] = self.object.max_points * len(context["weeks"])
         context["chart_labels"] = [f"W{week.week_number}" for week in context["weeks"]]
-        context["chart_points"] = [week.current_points for week in context["weeks"]]
+        context["chart_points"] = [
+            week.current_points / week.target_behavior.max_points * 100
+            for week in context["weeks"]
+        ]
         return context
+
+
+class Create(CreateView):
+    template_name = "target_behaviors/create.html"
+    url_name = "target-behaviors-create"
+    fields = ["name", "description", "days", "periods", "week_goal_percentage"]
+    model = TargetBehavior
+    success_url = "/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = CustomUser.objects.get(
+            uuid=self.request.resolver_match.kwargs.get("user_uuid")
+        )
+        return context
+
+    # execute after form is valid
+    def form_valid(self, form):
+        super().form_valid(form)
+        user = CustomUser.objects.get(
+            uuid=self.request.resolver_match.kwargs.get("user_uuid")
+        )
+        user.target_behaviors.add(self.object)
+        user.save()
+        if getattr(self.request.user, "level_of_access_granted") == "Teacher":
+            return redirect("users-profile-other", slug=user.uuid)
+        return redirect("users-profile")
+
+
+class Edit(UpdateView):
+    template_name = "target_behaviors/edit.html"
+    url_name = "target-behaviors-edit"
+    fields = ["name", "description", "days", "periods", "week_goal_percentage"]
+    model = TargetBehavior
+    slug_field = "uuid"
+    context_object_name = "target_behavior"
+    success_url = "/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = CustomUser.objects.get(
+            uuid=self.request.resolver_match.kwargs.get("user_uuid")
+        )
+        return context
+
+    def form_valid(self, form):
+        super().form_valid(form)
+        return redirect(
+            "target-behaviors-detail",
+            slug=self.object.uuid,
+            user_uuid=self.request.resolver_match.kwargs.get("user_uuid"),
+        )
+
+
+def delete_target_behavior(request, slug, user_uuid):
+    target_behavior = TargetBehavior.objects.get(uuid=slug)
+    user = CustomUser.objects.get(uuid=user_uuid)
+    user.target_behaviors.remove(target_behavior)
+    user.save()
+    if getattr(request.user, "level_of_access_granted") == "Teacher":
+        return redirect("users-profile-other", slug=user.uuid)
+    return redirect("users-profile")
 
 
 def _get_week_records(week):

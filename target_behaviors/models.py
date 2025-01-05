@@ -20,7 +20,7 @@ class Period(models.Model):
 
 class TargetBehavior(models.Model):
     uuid = UUIDField(version=4, editable=False)
-    name = models.CharField(max_length=150, unique=True)
+    name = models.CharField(max_length=150)
     description = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -29,6 +29,7 @@ class TargetBehavior(models.Model):
     week_goal_percentage = models.IntegerField(
         default=75, validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

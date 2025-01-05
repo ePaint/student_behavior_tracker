@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for student-behavior-tracker on 2024-12-29T00:41:20+01:00
+# fly.toml app configuration file generated for student-behavior-tracker on 2025-01-04T20:26:45+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -8,6 +8,10 @@ primary_region = 'sea'
 console_command = '/code/manage.py shell'
 
 [build]
+
+[deploy]
+#  release_command = 'python manage.py migrate --noinput'
+  release_command = 'python manage.py createsuperuser --noinput'
 
 [env]
   PORT = '8000'

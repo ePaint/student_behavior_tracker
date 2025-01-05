@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                         serialize=False,
                     ),
                 ),
-                ("name", models.CharField(max_length=150, unique=True)),
+                ("name", models.CharField(max_length=150)),
                 ("description", models.TextField()),
                 ("date_created", models.DateTimeField(auto_now_add=True)),
                 ("date_modified", models.DateTimeField(auto_now=True)),
@@ -97,6 +97,7 @@ class Migration(migrations.Migration):
                         validators=[MaxValueValidator(100), MinValueValidator(0)],
                     ),
                 ),
+                ("deleted", models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(

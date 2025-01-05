@@ -19,7 +19,9 @@ RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/li
 
 COPY . /code
 
-RUN python manage.py migrate
+#COPY .env /code/.env
+
+#RUN python manage.py migrate
 
 RUN python manage.py createsuperuser --noinput; exit 0
 
