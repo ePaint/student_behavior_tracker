@@ -33,9 +33,9 @@
     </div>
     <form class="my-4 d-none d-xl-block" method="post"
             {% if week.pk %}
-          hx-post="{% url 'target-behaviors-week-edit' week.uuid %}"
+          hx-post="{% url 'target-behaviors-week-edit' week.target_behavior.uuid week.user.uuid week.uuid %}"
             {% else %}
-          hx-post="{% url 'target-behaviors-week-create' %}"
+          hx-post="{% url 'target-behaviors-week-create'  week.target_behavior.uuid week.user.uuid %}"
             {% endif %}
           hx-trigger="submit">
         {% csrf_token %}
@@ -94,9 +94,9 @@
     </div>
     <form class="my-4 d-xl-none" method="post"
             {% if week.pk %}
-          hx-post="{% url 'target-behaviors-week-edit' week.uuid %}"
+          hx-post="{% url 'target-behaviors-week-edit' week.target_behavior.uuid week.user.uuid week.uuid %}"
             {% else %}
-          hx-post="{% url 'target-behaviors-week-create' %}"
+          hx-post="{% url 'target-behaviors-week-create'  week.target_behavior.uuid week.user.uuid %}"
             {% endif %}
           hx-trigger="submit">
         {% csrf_token %}

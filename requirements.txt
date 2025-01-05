@@ -1,6 +1,7 @@
 crispy-bootstrap5~=2024.10
 dj-database-url~=2.3.0
 django~=5.1.4
+django-braces~=1.16.0
 django-crispy-forms~=2.3
 django-htmx~=1.21.0
 django-model-utils~=5.0.0

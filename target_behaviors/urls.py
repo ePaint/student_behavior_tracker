@@ -12,12 +12,12 @@ urlpatterns = [
     path("edit/<uuid:slug>/<uuid:user_uuid>/", Edit.as_view(), name=Edit.url_name),
     path("delete/<uuid:slug>/<uuid:user_uuid>/", delete_target_behavior, name='target-behaviors-delete'),
     path(
-        "week/new/",
+        "week/new/<uuid:slug>/<uuid:user_uuid>/",
         create_target_behavior_week,
         name="target-behaviors-week-create",
     ),
     path(
-        "week/<uuid:slug>/",
+        "week/edit/<uuid:slug>/<uuid:user_uuid>/<uuid:week_uuid>/",
         edit_target_behavior_week,
         name="target-behaviors-week-edit",
     ),

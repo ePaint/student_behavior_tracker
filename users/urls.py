@@ -1,5 +1,5 @@
 from django.urls import path
-from users.views import SignIn, SignUp, SignOut, Profile, ProfileEdit, PasswordUpdate, ProfileOther
+from users.views import SignIn, SignUp, SignOut, Profile, ProfileEdit, PasswordUpdate, ProfileOther, AdminPasswordUpdate
 
 urlpatterns = [
     path('signin/', SignIn.as_view(), name=SignIn.url_name),
@@ -9,4 +9,5 @@ urlpatterns = [
     path('profile/edit/', ProfileEdit.as_view(), name=ProfileEdit.url_name),
     path('profile/password/', PasswordUpdate.as_view(), name=PasswordUpdate.url_name),
     path('profile/<uuid:slug>/', ProfileOther.as_view(), name=ProfileOther.url_name),
+    path('profile/password/admin/', AdminPasswordUpdate.as_view(), name=AdminPasswordUpdate.url_name),
 ]

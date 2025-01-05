@@ -25,3 +25,7 @@ urlpatterns = [
     path('target_behaviors/', include('target_behaviors.urls')),
     path('', include('layout.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler403 = "layout.views.permission_denied403"
+handler404 = "layout.views.not_found404"
+handler500 = "layout.views.server_error500"

@@ -1,4 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.forms import ModelChoiceField, CharField, PasswordInput, Form
+
 from users.models import CustomUser
 
 
@@ -23,3 +25,9 @@ class ProfileEditForm(UserChangeForm):
         model = CustomUser
         fields = ['email', 'first_name', 'last_name', 'level_of_access_wanted', 'teacher']
         exclude = ['password']
+
+
+class AdminPasswordUpdateForm(Form):
+    user = ModelChoiceField(queryset=CustomUser.objects.all())
+    password1 = CharField(widget=PasswordInput, label='New Password')
+    password2 = CharField(widget=PasswordInput, label='Confirm New Password')

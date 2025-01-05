@@ -153,6 +153,8 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+LOGIN_URL = "users-signin"
+
 LOGIN_REDIRECT_URL = "users-profile"
 
 LOGOUT_REDIRECT_URL = "users-signin"

@@ -15,8 +15,10 @@
             <h2 class="text-center">
                 {% if user.level_of_access_granted == 'Student' %}
                     <i class="fa fa-graduation-cap text-primary" aria-hidden="true"></i>
-                {% else %}
+                {% elif user.level_of_access_granted == 'Teacher' %}
                     <i class="fa fa-book text-success" aria-hidden="true"></i>
+                {% else %}
+                    <i class="fa fa-shield text-danger" aria-hidden="true"></i>
                 {% endif %}
                 {{ user.level_of_access_granted }} User Profile
             </h2>
@@ -69,16 +71,16 @@
     {% if request.user.uuid == user.uuid %}
         <div class="my-2">
             <div class="row">
-                <div class="d-flex justify-content-end p-0">
+                <div class="d-flex justify-content-between p-0">
                     <form method="post" hx-post="{% url 'users-signout' %}" hx-trigger="submit">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-secondary">Sign Out</button>
                     </form>
                     {% if request.user.is_superuser %}
-                        <a href="/admin" class="btn btn-outline-danger ms-auto">Admin</a>
-                    {% else %}
-                        <a href="{% url 'users-profile-edit' %}" class="btn btn-outline-primary ms-auto" hx-get="{% url 'users-profile-edit' %}">Edit</a>
+                        <a href="{% url 'users-admin-password-update' %}" class="btn btn-warning" hx-get="{% url 'users-admin-password-update' %}">Any User Password Update</a>
+                        <a href="/admin" class="btn btn-danger">Administration</a>
                     {% endif %}
+                    <a href="{% url 'users-profile-edit' %}" class="btn btn-outline-primary" hx-get="{% url 'users-profile-edit' %}">Edit</a>
                 </div>
             </div>
         </div>
@@ -87,11 +89,13 @@
         <div class="mt-5">
             <div class="row"><h2 class="text-center">Registered Target Behaviors</h2></div>
             {% for target_behavior in user.target_behaviors.all %}
-                <div class="row my-3 border rounded-3">
-                    <a href="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}"
-                       hx-get="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}"
-                       class="fs-5 btn btn-outline-secondary w-100 h-100">{{ target_behavior }}</a>
-                </div>
+                {% if not target_behavior.deleted %}
+                    <div class="row my-3 border rounded-3">
+                        <a href="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}"
+                           hx-get="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}"
+                           class="fs-5 btn btn-outline-secondary w-100 h-100">{{ target_behavior }}</a>
+                    </div>
+                {% endif %}
             {% endfor %}
             <div class="row my-3 border rounded-3">
                 <a href="{% url 'target-behaviors-create' user.uuid %}"
@@ -114,9 +118,11 @@
                         </div>
                         <div class="d-flex gap-1 flex-column justify-content-center align-items-center">
                             {% for target in student.target_behaviors.all %}
-                                <a href="{% url 'target-behaviors-detail' target.uuid student.uuid %}"
-                                   hx-get="{% url 'target-behaviors-detail' target.uuid student.uuid %}"
-                                   class="btn btn-outline-primary btn-small">{{ target }}</a>
+                                {% if not target.deleted %}
+                                    <a href="{% url 'target-behaviors-detail' target.uuid student.uuid %}"
+                                       hx-get="{% url 'target-behaviors-detail' target.uuid student.uuid %}"
+                                       class="btn btn-outline-primary btn-small">{{ target }}</a>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>

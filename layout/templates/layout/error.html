@@ -1,0 +1,7 @@
+{% extends request.base_template %}
+
+{% block content %}
+    <div class="row text-center mx-auto gap-4">
+        <h1 class="text-danger">{{ status_code }}: {{ message }}</h1>
+    </div>
+{% endblock %}

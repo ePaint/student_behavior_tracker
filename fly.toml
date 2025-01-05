@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for student-behavior-tracker on 2025-01-04T20:26:45+01:00
+# fly.toml app configuration file generated for student-behavior-tracker on 2025-01-05T14:30:49+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -10,8 +10,8 @@ console_command = '/code/manage.py shell'
 [build]
 
 [deploy]
-#  release_command = 'python manage.py migrate --noinput'
-  release_command = 'python manage.py createsuperuser --noinput'
+  release_command = 'python manage.py migrate --noinput'
+#  release_command = 'python manage.py createsuperuser --noinput'
 
 [env]
   PORT = '8000'
@@ -25,9 +25,7 @@ console_command = '/code/manage.py shell'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+  size = 'shared-cpu-1x'
 
 [[statics]]
   guest_path = '/code/static'

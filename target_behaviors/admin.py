@@ -1,9 +1,5 @@
 from django.contrib import admin
-from target_behaviors.models import Day, Period, TargetBehavior, TargetBehaviorWeek, TargetBehaviorRecord
+from target_behaviors.models import Period, TargetBehavior
 
-admin.site.register(Day)
 admin.site.register(Period)
 admin.site.register(TargetBehavior)
-# admin.site.register(TargetBehaviorWeek)
-# admin.site.register(TargetBehaviorRecord)
-

@@ -4,7 +4,11 @@
 
 {% block content %}
     <div class="row"><h2 class="text-center">Sign In Form</h2></div>
-    <form class="row" method="post" id="signin-form" hx-post="{% url 'users-signin' %}" hx-trigger="submit">
+    <form class="row"
+          method="post"
+          id="signin-form"
+          hx-post="{% url 'users-signin' %}{% if next %}?next={{ next }}{% endif %}"
+          hx-trigger="submit">
         {% csrf_token %}
         {{ form|crispy }}
         <div class="d-flex justify-content-between">
