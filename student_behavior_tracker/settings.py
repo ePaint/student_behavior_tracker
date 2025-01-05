@@ -34,12 +34,14 @@ ALLOWED_HOSTS = [
     "student-behavior-tracker.fly.dev",
     "localhost",
     "127.0.0.1",
+    "efmaestrotracker.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://student-behavior-tracker.fly.dev",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://efmaestrotracker.com",
 ]
 
 

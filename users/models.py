@@ -36,3 +36,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         if self.first_name:
             return self.first_name
         return self.email
+
+    @property
+    def active_target_behaviors(self):
+        return self.target_behaviors.filter(deleted=False)

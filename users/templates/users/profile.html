@@ -88,14 +88,12 @@
     {% if user.level_of_access_granted == 'Student' %}
         <div class="mt-5">
             <div class="row"><h2 class="text-center">Registered SMART Goals</h2></div>
-            {% for target_behavior in user.target_behaviors.all %}
-                {% if not target_behavior.deleted %}
-                    <div class="row my-3 border rounded-3">
-                        <a href="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}"
-                           hx-get="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}"
-                           class="fs-5 btn btn-outline-secondary w-100 h-100">{{ target_behavior }}</a>
-                    </div>
-                {% endif %}
+            {% for target_behavior in user.active_target_behaviors %}
+                <div class="row my-3 border rounded-3">
+                    <a href="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}"
+                       hx-get="{% url 'target-behaviors-detail' target_behavior.uuid user.uuid %}"
+                       class="fs-5 btn btn-outline-secondary w-100 h-100">{{ target_behavior }}</a>
+                </div>
             {% endfor %}
             <div class="row my-3 border rounded-3">
                 <a href="{% url 'target-behaviors-create' user.uuid %}"
@@ -117,12 +115,10 @@
                                class="btn btn-success btn-small">{{ student }}</a>
                         </div>
                         <div class="d-flex gap-1 flex-column justify-content-center align-items-center">
-                            {% for target in student.target_behaviors.all %}
-                                {% if not target.deleted %}
-                                    <a href="{% url 'target-behaviors-detail' target.uuid student.uuid %}"
-                                       hx-get="{% url 'target-behaviors-detail' target.uuid student.uuid %}"
-                                       class="btn btn-outline-primary btn-small">{{ target }}</a>
-                                {% endif %}
+                            {% for target in student.active_target_behaviors %}
+                                <a href="{% url 'target-behaviors-detail' target.uuid student.uuid %}"
+                                   hx-get="{% url 'target-behaviors-detail' target.uuid student.uuid %}"
+                                   class="btn btn-outline-primary btn-small">{{ target }}</a>
                             {% endfor %}
                         </div>
                     </div>
