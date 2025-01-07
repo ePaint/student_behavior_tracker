@@ -94,3 +94,23 @@ class AdminPasswordUpdate(LoginRequiredMixin, SuperuserRequiredMixin, FormView):
 
     def get_success_url(self):
         return reverse_lazy("users-profile")
+
+
+class ParentEmailCheck(TemplateView):
+    template_name = "users/parent_email_check.html"
+    url_name = "users-parent-email-check"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        email = self.request.GET.get("parent_email")
+        if not email:
+            return context
+        try:
+            validate_email(email)
+        except ValidationError:
+            return context
+
+        context["parent_email_exists"] = CustomUser.objects.filter(
+            email__iexact=self.request.GET.get("parent_email")
+        ).exists()
+        return context
