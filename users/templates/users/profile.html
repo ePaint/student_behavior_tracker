@@ -39,14 +39,14 @@
     <div class="my-2">
         <div class="row border rounded-3 py-1">
             <span class="col-md-4 text-secondary text-md-end text-start">School:</span>
-            <span class="col-md-8">{{ user.school }}</span>
+            <span class="col-md-8">{{ user.school|default:"N/A" }}</span>
         </div>
     </div>
     {% if user.level_of_access_granted == "Student" %}
         <div class="my-2">
             <div class="row border rounded-3 py-1">
                 <span class="col-md-4 text-secondary text-md-end text-start">Teacher:</span>
-                <span class="col-md-8">{{ user.teacher }}</span>
+                <span class="col-md-8">{{ user.teacher|default:"N/A" }}</span>
             </div>
         </div>
         <div class="my-2">
