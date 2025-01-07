@@ -1,8 +1,5 @@
-from tkinter import Widget
-
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.forms import ModelChoiceField, CharField, PasswordInput, Form, EmailField, TextInput
-
+from django.forms import ModelChoiceField, CharField, PasswordInput, Form, TextInput
 from users.models import CustomUser
 
 
