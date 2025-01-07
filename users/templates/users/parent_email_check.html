@@ -1,0 +1,8 @@
+{% load static %}
+<span>Parent email</span>
+{% if parent_email_exists == True %}
+    <i id="parent_email_check_success" class="fa fa-check-circle text-success"></i>
+{% elif parent_email_exists == False %}
+    <i id="parent_email_check_error" class="fa fa-exclamation-circle text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="There's no user registered with this email"></i>
+{% endif %}
+<img src="{% static 'layout/htmx-indicator.svg' %}" alt="" id="parent-email-htmx-indicator" class="parent-email-htmx-indicator">

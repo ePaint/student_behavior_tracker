@@ -10,13 +10,22 @@
     z-index: -1;
 }
 
-.htmx-request .htmx-indicator {
+.parent-email-htmx-indicator {
+    width: 16px;
+    height: 16px;
+    opacity: 0;
+    scale: 2;
+    transition: all 500ms ease-in-out;
+    z-index: -1;
+}
+
+.htmx-request .htmx-indicator, .htmx-request .parent-email-htmx-indicator {
     opacity: 1;
     scale: 1;
     z-index: 1000;
 }
 
-.htmx-request.htmx-indicator {
+.htmx-request.htmx-indicator, .htmx-request.parent-email-htmx-indicator {
     opacity: 1;
     scale: 1;
     z-index: 1000;

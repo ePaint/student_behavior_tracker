@@ -32,26 +32,14 @@
     </div>
     <div class="my-2">
         <div class="row border rounded-3 py-1">
-            <span class="col-md-4 text-secondary text-md-end text-start">First Name:</span>
-            <span class="col-md-8">{{ user.first_name }}</span>
+            <span class="col-md-4 text-secondary text-md-end text-start">Full Name:</span>
+            <span class="col-md-8">{{ user.first_name }} {{ user.last_name }}</span>
         </div>
     </div>
     <div class="my-2">
         <div class="row border rounded-3 py-1">
-            <span class="col-md-4 text-secondary text-md-end text-start">Last Name:</span>
-            <span class="col-md-8">{{ user.last_name }}</span>
-        </div>
-    </div>
-    <div class="my-2">
-        <div class="row border rounded-3 py-1">
-            <span class="col-md-4 text-secondary text-md-end text-start">Level of access wanted:</span>
-            <span class="col-md-8">{{ user.level_of_access_wanted }}</span>
-        </div>
-    </div>
-    <div class="my-2">
-        <div class="row border rounded-3 py-1">
-            <span class="col-md-4 text-secondary text-md-end text-start">Level of access granted:</span>
-            <span class="col-md-8">{{ user.level_of_access_granted }}</span>
+            <span class="col-md-4 text-secondary text-md-end text-start">School:</span>
+            <span class="col-md-8">{{ user.school }}</span>
         </div>
     </div>
     {% if user.level_of_access_granted == "Student" %}
@@ -59,6 +47,12 @@
             <div class="row border rounded-3 py-1">
                 <span class="col-md-4 text-secondary text-md-end text-start">Teacher:</span>
                 <span class="col-md-8">{{ user.teacher }}</span>
+            </div>
+        </div>
+        <div class="my-2">
+            <div class="row border rounded-3 py-1">
+                <span class="col-md-4 text-secondary text-md-end text-start">Parent:</span>
+                <span class="col-md-8">{{ user.parent_email|default:"N/A" }}</span>
             </div>
         </div>
     {% endif %}

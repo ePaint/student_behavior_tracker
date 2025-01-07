@@ -1,5 +1,5 @@
 from django.urls import path
-from users.views import SignIn, SignUp, SignOut, Profile, ProfileEdit, PasswordUpdate, ProfileOther, AdminPasswordUpdate
+from users.views import SignIn, SignUp, SignOut, Profile, ProfileEdit, PasswordUpdate, ProfileOther, AdminPasswordUpdate, ParentEmailCheck
 
 urlpatterns = [
     path('signin/', SignIn.as_view(), name=SignIn.url_name),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('profile/password/', PasswordUpdate.as_view(), name=PasswordUpdate.url_name),
     path('profile/<uuid:slug>/', ProfileOther.as_view(), name=ProfileOther.url_name),
     path('profile/password/admin/', AdminPasswordUpdate.as_view(), name=AdminPasswordUpdate.url_name),
+    path('parent-email/check/', ParentEmailCheck.as_view(), name=ParentEmailCheck.url_name),
 ]

@@ -7,6 +7,13 @@ from users.managers import CustomUserManager
 from django.utils.translation import gettext_lazy as _
 
 
+class School(models.Model):
+    name = models.CharField(max_length=150, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     uuid = UUIDField(version=4, editable=False)
     username = None
@@ -16,7 +23,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     LEVELS_OF_ACCESS = Choices('Student', 'Teacher', 'Admin')
     level_of_access_wanted = models.CharField(choices=LEVELS_OF_ACCESS, default=LEVELS_OF_ACCESS.Student, max_length=10)
     level_of_access_granted = models.CharField(choices=LEVELS_OF_ACCESS, default=LEVELS_OF_ACCESS.Student, max_length=10)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='users', blank=True, null=True)
     teacher = models.ForeignKey('self', on_delete=models.CASCADE, related_name='students', blank=True, null=True)
+    parent_email = models.EmailField(blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     target_behaviors = models.ManyToManyField('target_behaviors.TargetBehavior', related_name='users', blank=True)
     is_active = models.BooleanField(default=True)
